@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
 
-    <t t-extend="PosTicket">
-        <t t-jquery=".pos-center-align t:first" t-operation="replace">
-            <t t-esc="order.get('creationDate').toString(Date.CultureInfo.formatPatterns.shortDate + ' ' +
-                Date.CultureInfo.formatPatterns.longTime)"/>
+    <!-- Add new button to print Gift Ticket -->
+    <t t-extend="ReceiptScreenWidget">
+        <t t-jquery="div[class='button print']" t-operation="after">
+            <div id="print-gift" class="button print-gift">
+                <i class='fa fa-print'></i> Print Gift Ticket
+            </div>
         </t>
     </t>
 
-    <t t-name="PosGiftTicket">
+    <!-- New template, same as PosTicket but no prices -->
+    <t t-name="PosTicketGift">
         <div class="pos-sale-ticket">
-
-            <div class="pos-center-align">
-                <t t-esc="order.get('creationDate').toString(Date.CultureInfo.formatPatterns.shortDate + ' ' +
-                Date.CultureInfo.formatPatterns.longTime)"/><br />
-                <t t-esc="order.get('name')"/></div>
+            
+            <div class="pos-center-align"><t t-esc="order.formatted_validation_date"/> <t t-esc="order.name"/> GIFT TICKET</div>
             <br />
             <t t-esc="widget.pos.company.name"/><br />
-            Phone: <t t-esc="widget.pos.company.phone || ''"/><br />
-            User: <t t-esc="widget.pos.cashier ? widget.pos.cashier.name : widget.pos.user.name"/><br />
-            Shop: <t t-esc="widget.pos.shop.name"/><br />
+            <div class="receipt-phone">
+                Phone: <t t-esc="widget.pos.company.phone || ''"/><br />
+            </div>
+            <div class="receipt-user">
+                User: <t t-esc="widget.pos.get_cashier().name"/><br />
+            </div>
             <br />
-            <t t-if="widget.pos.config.receipt_header">
+            <t t-if="receipt.header">
                 <div style='text-align:center'>
-                    <t t-esc="widget.pos.config.receipt_header" />
+                    <t t-esc="receipt.header" />
                 </div>
                 <br />
             </t>
-            <div class="pos-center-align" style="font-size:1.2em;font-weight:bold;">GIFT TICKET</div>
-            <br />
-            <table>
+            <table class='receipt-orderlines'>
                 <colgroup>
-                    <col width='75%' />
-                    <col width='25%' />
+                    <col width='70%'/>
+                    <col width='30%'/>
                 </colgroup>
                 <tr t-foreach="orderlines" t-as="orderline">
                     <td>
@@ -43,13 +44,109 @@
                     </td>
                 </tr>
             </table>
-            <t t-if="widget.pos.config.receipt_footer">
+            <br />
+            <t t-if="receipt.footer">
                 <br />
                 <div style='text-align:center'>
-                    <t t-esc="widget.pos.config.receipt_footer" />
+                    <t t-esc="receipt.footer" />
                 </div>
             </t>
         </div>
+    </t>
+
+    <!-- New template, same as XmlReceipt but no prices -->
+    <t t-name="XmlReceiptGift">
+        <receipt align='center' width='40' value-thousands-separator='' >
+            <t t-if='receipt.company.logo'>
+                <img t-att-src='receipt.company.logo' />
+                <br/>
+            </t>
+            <t t-if='!receipt.company.logo'>
+                <h1><t t-esc='receipt.company.name' /></h1>
+                <br/>
+            </t>
+            <div font='b'>
+                <t t-if='receipt.company.contact_address'>
+                    <div><t t-esc='receipt.company.contact_address' /></div>
+                </t>
+                <t t-if='receipt.company.phone'>
+                    <div>Tel:<t t-esc='receipt.company.phone' /></div>
+                </t>
+                <t t-if='receipt.company.vat'>
+                    <div>VAT:<t t-esc='receipt.company.vat' /></div>
+                </t>
+                <t t-if='receipt.company.email'>
+                    <div><t t-esc='receipt.company.email' /></div>
+                </t>
+                <t t-if='receipt.company.website'>
+                    <div><t t-esc='receipt.company.website' /></div>
+                </t>
+                <t t-if='receipt.header_xml'>
+                    <t t-raw='receipt.header_xml' />
+                </t>
+                <t t-if='!receipt.header_xml and receipt.header'>
+                    <div><t t-esc='receipt.header' /></div>
+                </t>
+                <t t-if='receipt.cashier'>
+                    <div class='cashier'>
+                        <div>--------------------------------</div>
+                        <div>Served by <t t-esc='receipt.cashier' /></div>
+                    </div>
+                </t>
+            </div>
+            <br /><br />
+
+            <!-- Orderlines -->
+
+            <div class='orderlines' line-ratio='0.6'>
+                <t t-foreach='receipt.orderlines' t-as='line'>
+                    <t t-set='simple' t-value='line.discount === 0 and line.unit_name === "Unit(s)" and line.quantity === 1' />
+                    <t t-if='simple'>
+                        <line>
+                            <left><t t-esc='line.product_name_wrapped[0]' /></left>
+                        </line>
+                        <t t-call="XmlReceiptWrappedProductNameLines"/>
+                    </t>
+                    <t t-if='!simple'>
+                        <line><left><t t-esc='line.product_name_wrapped[0]' /></left></line>
+                        <t t-call="XmlReceiptWrappedProductNameLines"/>
+                        <line indent='1'>
+                            <left>
+                                <value t-att-value-decimals='pos.dp["Product Unit of Measure"]' value-autoint='on'>
+                                    <t t-esc='line.quantity' />
+                                </value>
+                                <t t-if='line.unit_name !== "Unit(s)"'>
+                                    <t t-esc='line.unit_name' /> 
+                                </t>
+                            </left>
+                        </line>
+                    </t>
+                </t>
+            </div>
+
+            <div class='before-footer' />
+
+            <!-- Footer -->
+            <t t-if='receipt.footer_xml'>
+                <t t-raw='receipt.footer_xml' />
+            </t>
+
+            <t t-if='!receipt.footer_xml and receipt.footer'>
+                <br/>
+                <t t-esc='receipt.footer' />
+                <br/>
+                <br/>
+            </t>
+
+            <div class='after-footer' />
+
+            <br/>
+            <div font='b'>
+                <div><t t-esc='receipt.name' /></div>
+                <div><t t-esc='receipt.date.localestring' /></div>
+            </div>
+
+        </receipt>
     </t>
 
 </templates>

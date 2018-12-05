@@ -4,13 +4,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0\n"
+"Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-17 07:44+0000\n"
-"PO-Revision-Date: 2015-08-17 07:44+0000\n"
-"Last-Translator: Ismael Calvo <ismael.calvo@factorlibre.com>\n"
+"POT-Creation-Date: 2018-12-05 16:07+0000\n"
+"PO-Revision-Date: 2018-12-05 16:07+0000\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -18,36 +17,50 @@ msgstr ""
 
 #. module: pos_gift_ticket
 #. openerp-web
-#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:22
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:17
 #, python-format
 msgid "GIFT TICKET"
-msgstr "TICKET REGALO"
+msgstr "Ticket REGALO"
 
 #. module: pos_gift_ticket
 #. openerp-web
-#: code:addons/pos_gift_ticket/static/src/js/main.js:19
-#, python-format
-msgid "Gift Ticket"
-msgstr "Ticket Regalo"
-
-#. module: pos_gift_ticket
-#. openerp-web
-#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:11
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:20
 #, python-format
 msgid "Phone:"
 msgstr "Teléfono:"
 
 #. module: pos_gift_ticket
 #. openerp-web
-#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:13
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:8
 #, python-format
-msgid "Shop:"
-msgstr "Tienda:"
+msgid "Print Gift Ticket"
+msgstr "Imprimir Ticket Regalo"
 
 #. module: pos_gift_ticket
 #. openerp-web
-#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:12
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:93
+#, python-format
+msgid "Served by"
+msgstr "Atendido por"
+
+#. module: pos_gift_ticket
+#. openerp-web
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:73
+#, python-format
+msgid "Tel:"
+msgstr "Tel:"
+
+#. module: pos_gift_ticket
+#. openerp-web
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:23
 #, python-format
 msgid "User:"
 msgstr "Usuario:"
+
+#. module: pos_gift_ticket
+#. openerp-web
+#: code:addons/pos_gift_ticket/static/src/xml/pos.xml:76
+#, python-format
+msgid "VAT:"
+msgstr "VAT:"
 

@@ -23,7 +23,7 @@
 
 {
     "name": "Gift Ticket",
-    "version": "8.0.0.1.0",
+    "version": "11.0.0.1.0",
     "author": "FactorLibre, Odoo Community Association (OCA)",
     "website": "http://www.factorlibre.com",
     "license": "AGPL-3",
@@ -35,5 +35,5 @@
     "qweb": [
         'static/src/xml/pos.xml',
     ],
-    'installable': False,
+    'installable': True,
 }

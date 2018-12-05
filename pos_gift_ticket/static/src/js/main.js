@@ -1,48 +1,50 @@
-/*
-    POS Gift Tickete for Odoo
-    Copyright (C) 2015 FactorLibre (www.factorlibre.com)
-    @author: Ismael Calvo <ismael.calvo@factorlibre.com>
-    The licence is in the file __openerp__.py
-*/
+ odoo.define('pos_gift_ticket.screens', function (require) {
+    // Adding a button to print GiftTicket without prices
+    "use strict";
+    var screens = require('point_of_sale.screens');
+    var core = require('web.core');
+    var QWeb = core.qweb;
 
-
-openerp.pos_gift_ticket = function (instance) {
-    var _t = instance.web._t,
-        _lt = instance.web._lt;
-    var QWeb = instance.web.qweb;
-
-    instance.point_of_sale.ReceiptScreenWidget.include({
-        show: function(){
-            this._super()
-            var self = this;
-            var print_gift_ticket_button = this.add_action_button({
-                    label: _t('Gift Ticket'),
-                    icon: '/point_of_sale/static/src/img/icons/png48/printer.png',
-                    click: function(){
-                        self.print_gift();
-                    },
-                });
+    screens.ReceiptScreenWidget.include({
+        print_web: function() {
+            // Render again the PosTicket if its called from normarl print button
+            if (!this.printing_gift_ticket){
+                this.$('.pos-receipt-container').html(QWeb.render('PosTicket', this.get_receipt_render_env()));
+            }
+            this._super();
         },
-        refresh_gift_ticket: function(){
-            var order = this.pos.get('selectedOrder');
-            $('.pos-receipt-container', this.$el).html(QWeb.render('PosGiftTicket',{
-                    widget:this,
-                    order: order,
-                    orderlines: order.get('orderLines').models,
-                }));
-        },
-        print: function() {
-            this.refresh()
-            this._super()
+        print_xml: function() {
+            if (this.printing_gift_ticket){
+                var receipt = QWeb.render('XmlReceiptGift', this.get_receipt_render_env());
+                this.pos.proxy.print_receipt(receipt);
+                this.pos.get_order()._printed = true;
+            }
+            else{
+                this._super()
+            }
         },
         print_gift: function() {
-            this.refresh_gift_ticket()
-            this.pos.get('selectedOrder')._printed = true;
-            setTimeout(function() {
-                    window.print();
-                }, 2000);
-              // window.print();
+            // Render the PosTicketGift in order to print it
+            this.$('.pos-receipt-container').html(QWeb.render('PosTicketGift', this.get_receipt_render_env()));
+            this.print_web()
+            this.printing_gift_ticket = false;
+
+        },
+        renderElement: function() {
+            var self = this;
+            self.printing_gift_ticket = false;  // To control 
+            this._super();
+
+            // Button Print Gift Ticket
+            this.$('.button.print-gift').click(function(){
+                if (!self._locked) {
+                    self.printing_gift_ticket = true
+                    self.print_gift();
+                }
+            });
         },
     });
-
-};
+        
+    return screens
+   
+});

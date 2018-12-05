@@ -10,7 +10,7 @@ but without prices and taxes.
 Usage
 =====
 
-Just press the *Gift Ticket* button that appears beside the normal print
+Just press the *Gift Ticket* button that appears under the normal print
 ticket button
 
 
@@ -42,6 +42,7 @@ Contributors
 ------------
 
 * Ismael Calvo <ismael.calvo@factorlibre.com>
+* Javier Colmenero <javier@comunitea.com>
 
 
 Maintainer
